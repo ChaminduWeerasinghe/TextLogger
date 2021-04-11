@@ -82,7 +82,6 @@ def validate(event):
         if not var.get() == 'Please Select':
             count = count + 1
         if count == 10:
-            print('Button Activated')
             CalcBtn['state'] = 'active'
             break
 
@@ -104,18 +103,15 @@ def calcSore():
     stressLevel = ''
     if Total <= 13:
         stressLevel = 'Low'
-        print('Total is ' + str(Total))
         if not Total == 0:
             storeNClean(stressLevel)
             Total = 0
     elif Total >= 14 & Total <= 26:
-        print('Total is ' + str(Total))
         stressLevel = 'Moderate'
         if not Total == 0:
             storeNClean(stressLevel)
             Total = 0
     elif Total >= 27 & Total <=40:
-        print('Total is ' + str(Total))
         stressLevel = 'High'
         if not Total == 0:
             storeNClean(stressLevel)
