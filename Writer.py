@@ -24,7 +24,6 @@ class ScroreWriter():
     @staticmethod
     def write_file(score, filLocation):
         if not path.exists(filLocation):
-            print('came')
             f = open(filLocation, "w")
             f.write('Time,Score\n')
             f.write(str(datetime.now(tz=pytz.utc)) + ',' + score)
