@@ -7,17 +7,35 @@ class Write(Thread):
     def write_file(self, list, filename):
         with open(filename, "a") as file:
             i = 0
+            dataToPrint = ''
             for elemnt in list:
                 i += 1
                 if i == 1:
-                    key = str(elemnt).replace("'", '')
-                    key = str(key).replace("Key.",'')
-                    file.write(key)
+                    key = str(str(elemnt).replace("'", '')).replace("Key.",'')
+                    dataToPrint = key
                 else:
-                    file.write(str(elemnt))
-                if i < 3:
-                    file.write(str(","))
+                    dataToPrint = dataToPrint+','+elemnt
+            file.write(dataToPrint)
             file.write("\n")
+
+class rawfileWriter(Thread):
+    def write_rawfile(self,filename,event,eventType,time):
+        if not path.exists(filename):
+            f = open(filename, "w")
+            f.write('key,event_type,time\n')
+            key = str(str(event).replace("'", '')).replace("Key.", '')
+            dataToWrite = key + ',' + eventType + ',' + str(time)
+            f.write(dataToWrite+'\n')
+            f.close()
+        else:
+            f = open(filename, "a")
+            key = str(str(event).replace("'", '')).replace("Key.", '')
+            dataToWrite = key + ',' + eventType + ',' + str(time)
+            f.write(dataToWrite+'\n')
+            f.close()
+
+
+
 
 
 class ScroreWriter():
