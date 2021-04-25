@@ -3,30 +3,39 @@ from os import path
 from datetime import datetime
 import threading
 import Writer
-import pytz
+from queue import Queue
 from Windows import PopUI
 
 List_of_Lists = []
 fileLocation = "Data/Keypress.csv"
 HotkeyStatus = 0
-
+queue = Queue(maxsize=1)
+fatigueLevel = 'NA'
 
 def on_press(event):
     global HotkeyStatus
     if HotkeyStatus == 0 :
+        threading.Thread(target=Writer.rawfileWriter().write_rawfile,args=('Data/RawKeystokes.csv',event,'Pressed',datetime.now(),)).start()
         Check_Availability()
         global List_of_Lists
         if not isExist(List_of_Lists,event):
-            List_of_Lists.append(list([event,datetime.now(tz=pytz.utc),'']))
+            List_of_Lists.append(list([event,str(datetime.now()),'','']))
 
+def setFatigueLevel():
+    global fatigueLevel,queue
+    if not queue.empty():
+        fatigueLevel = queue.get()
 
 def on_release(event):
     global HotkeyStatus
     if HotkeyStatus == 0:
         global List_of_Lists
+        setFatigueLevel()
+        threading.Thread(target=Writer.rawfileWriter().write_rawfile, args=('Data/RawKeystokes.csv', event, 'Released', datetime.now(),)).start()
         for list in List_of_Lists:
             if list[0]==event:
-                list[2]=datetime.now(tz=pytz.utc)
+                list[2]=str(datetime.now())
+                list[3]=fatigueLevel
                 thred =  threading.Thread(target=Writer.Write().write_file, args=(list,fileLocation,))
                 thred.start()
                 List_of_Lists.remove(list)
@@ -59,7 +68,7 @@ def Check_Availability():
     if not path.exists(fileLocation):
         f = open(fileLocation,"w")
         f.close()
-        firstList = ['key','keydown_time','keyup_time']
+        firstList = ['key','keydown_time','keyup_time','fatigue level']
         thread1 = threading.Thread(target=Writer.Write().write_file, args=(firstList,fileLocation,))
         thread1.start()
 
@@ -68,7 +77,7 @@ KeyboardListner =  Listener(on_press=on_press, on_release=on_release)
 HotKeyListner = GlobalHotKeys({'<ctrl>+<alt>+h':on_Pause,'<ctrl>+<alt>+i': on_Resume})
 
 def startPopup():
-    threading.Thread(target=PopUI.PopUIStarter, args=('PopUIThread',)).start()
+    threading.Thread(target=PopUI.PopUIStarter, args=('PopUIThread',queue)).start()
 
 def starter():
     startPopup()
