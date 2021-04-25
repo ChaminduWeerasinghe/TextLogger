@@ -5,13 +5,15 @@ import time
 import threading
 
 filLocation = 'Data/FatigueScores.csv'
-snoozeTime = 10
+snoozeTime = 0
 popUI = None
 var = None
 submit = True
+q = None
 
-def PopUIStarter(ThreadName):
-    global popUI,submit,snoozeTime
+def PopUIStarter(ThreadName,queue):
+    global popUI,submit,snoozeTime,q
+    q = queue
     threading.current_thread().name = ThreadName
 
     while True:
@@ -67,7 +69,12 @@ def SaveNClose(rslt):
         snoozeTime = 180
     elif var.get() == '6hours':
         snoozeTime = 360
+    else:
+        snoozeTime = 0.05
 
+    if not q.empty():
+        print(q.get())
+    q.put(rslt)
     Writer.ScroreWriter.write_file(rslt, 'Data/FatigueScores.csv', )
     submit = True
     popUI.destroy()
