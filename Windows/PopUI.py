@@ -70,7 +70,7 @@ def SaveNClose(rslt):
     elif var.get() == '6hours':
         snoozeTime = 360
     else:
-        snoozeTime = 0.05
+        snoozeTime = 10
 
     if not q.empty():
         print(q.get())
