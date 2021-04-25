@@ -19,18 +19,16 @@ class Write(Thread):
             file.write("\n")
 
 class rawfileWriter(Thread):
-    def write_rawfile(self,filename,event,eventType,time):
+    def write_rawfile(self,filename,event,eventType,time,fatigueScore):
+        key = str(str(event).replace("'", '')).replace("Key.", '')
+        dataToWrite = key + ',' + eventType + ',' + str(time) + ',' + fatigueScore
         if not path.exists(filename):
             f = open(filename, "w")
-            f.write('key,event_type,time\n')
-            key = str(str(event).replace("'", '')).replace("Key.", '')
-            dataToWrite = key + ',' + eventType + ',' + str(time)
+            f.write('key,event_type,time,fatigue_score\n')
             f.write(dataToWrite+'\n')
             f.close()
         else:
             f = open(filename, "a")
-            key = str(str(event).replace("'", '')).replace("Key.", '')
-            dataToWrite = key + ',' + eventType + ',' + str(time)
             f.write(dataToWrite+'\n')
             f.close()
 
@@ -44,10 +42,10 @@ class ScroreWriter():
         if not path.exists(filLocation):
             f = open(filLocation, "w")
             f.write('Time,Score\n')
-            f.write(str(datetime.now(tz=pytz.utc)) + ',' + score)
+            f.write(str(datetime.now()) + ',' + score)
             f.close()
         else:
             f = open(filLocation, 'a')
             f.write("\n")
-            f.write(str(datetime.now(tz=pytz.utc)) + ',' + score)
+            f.write(str(datetime.now()) + ',' + score)
             f.close()
