@@ -13,9 +13,10 @@ queue = Queue(maxsize=1)
 fatigueLevel = 'NA'
 
 def on_press(event):
-    global HotkeyStatus
+    global HotkeyStatus,fatigueLevel
     if HotkeyStatus == 0 :
-        threading.Thread(target=Writer.rawfileWriter().write_rawfile,args=('Data/RawKeystokes.csv',event,'Pressed',datetime.now(),)).start()
+        setFatigueLevel()
+        threading.Thread(target=Writer.rawfileWriter().write_rawfile,args=('Data/RawKeystokes.csv',event,'Pressed',datetime.now(),fatigueLevel,)).start()
         Check_Availability()
         global List_of_Lists
         if not isExist(List_of_Lists,event):
@@ -27,11 +28,10 @@ def setFatigueLevel():
         fatigueLevel = queue.get()
 
 def on_release(event):
-    global HotkeyStatus
+    global HotkeyStatus,fatigueLevel
     if HotkeyStatus == 0:
         global List_of_Lists
-        setFatigueLevel()
-        threading.Thread(target=Writer.rawfileWriter().write_rawfile, args=('Data/RawKeystokes.csv', event, 'Released', datetime.now(),)).start()
+        threading.Thread(target=Writer.rawfileWriter().write_rawfile, args=('Data/RawKeystokes.csv', event, 'Released', datetime.now(),fatigueLevel,)).start()
         for list in List_of_Lists:
             if list[0]==event:
                 list[2]=str(datetime.now())
