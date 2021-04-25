@@ -1,2 +1,2 @@
 # TextLogger
-Keylogging Desktop App for Detect Stress and Fatigue ( Linux and Windows )
+Keylogging Desktop App for Detect Stress and Fatigue (Linux and Windows)
