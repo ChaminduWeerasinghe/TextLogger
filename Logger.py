@@ -7,7 +7,7 @@ from queue import Queue
 from Windows import PopUI
 
 List_of_Lists = []
-fileLocation = "Data/Keypress.csv"
+fileLocation = "Data/Keypress.tsv"
 HotkeyStatus = 0
 queue = Queue(maxsize=1)
 fatigueLevel = 'NA'
@@ -16,7 +16,7 @@ def on_press(event):
     global HotkeyStatus,fatigueLevel
     if HotkeyStatus == 0 :
         setFatigueLevel()
-        threading.Thread(target=Writer.rawfileWriter().write_rawfile,args=('Data/RawKeystokes.csv',event,'Pressed',datetime.now(),fatigueLevel,)).start()
+        threading.Thread(target=Writer.rawfileWriter().write_rawfile,args=('Data/RawKeystokes.tsv',event,'Pressed',datetime.now(),fatigueLevel,)).start()
         Check_Availability()
         global List_of_Lists
         if not isExist(List_of_Lists,event):
@@ -31,12 +31,12 @@ def on_release(event):
     global HotkeyStatus,fatigueLevel
     if HotkeyStatus == 0:
         global List_of_Lists
-        threading.Thread(target=Writer.rawfileWriter().write_rawfile, args=('Data/RawKeystokes.csv', event, 'Released', datetime.now(),fatigueLevel,)).start()
+        threading.Thread(target=Writer.rawfileWriter().write_rawfile, args=('Data/RawKeystokes.tsv', event, 'Released', datetime.now(),fatigueLevel,)).start()
         for list in List_of_Lists:
             if list[0]==event:
                 list[2]=str(datetime.now())
                 list[3]=fatigueLevel
-                thred =  threading.Thread(target=Writer.Write().write_file, args=(list,fileLocation,))
+                thred = threading.Thread(target=Writer.Write().write_file, args=(list,fileLocation,))
                 thred.start()
                 List_of_Lists.remove(list)
     elif HotkeyStatus == 1:
