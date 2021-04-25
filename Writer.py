@@ -1,6 +1,5 @@
 from threading import Thread
 from os import path
-import pytz
 from datetime import datetime
 
 class Write(Thread):
@@ -14,17 +13,17 @@ class Write(Thread):
                     key = str(str(elemnt).replace("'", '')).replace("Key.",'')
                     dataToPrint = key
                 else:
-                    dataToPrint = dataToPrint+','+elemnt
+                    dataToPrint = dataToPrint+'\t'+elemnt
             file.write(dataToPrint)
             file.write("\n")
 
 class rawfileWriter(Thread):
     def write_rawfile(self,filename,event,eventType,time,fatigueScore):
         key = str(str(event).replace("'", '')).replace("Key.", '')
-        dataToWrite = key + ',' + eventType + ',' + str(time) + ',' + fatigueScore
+        dataToWrite = key + '\t' + eventType + '\t' + str(time) + '\t' + fatigueScore
         if not path.exists(filename):
             f = open(filename, "w")
-            f.write('key,event_type,time,fatigue_score\n')
+            f.write('key\tevent_type\ttime\tfatigue_score\n')
             f.write(dataToWrite+'\n')
             f.close()
         else:
